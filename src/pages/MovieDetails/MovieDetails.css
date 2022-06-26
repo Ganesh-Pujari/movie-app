@@ -1,0 +1,25 @@
+.card {
+    padding: 5px;
+    --background: var(--ion-color-dark);
+}
+
+.movie-details {
+    margin: 5px;
+}
+
+.title {
+    margin-left: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--ion-color-light);
+}
+
+.starting,
+.starting-list,
+.genre-list,
+.overview,
+.release {
+    color: var(--ion-color-medium-tint);
+    margin: 5px 0 0 5px;
+    font-size: 14px;
+}

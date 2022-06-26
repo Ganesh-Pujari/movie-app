@@ -1,0 +1,4 @@
+export const MovieObj = {
+    API_KEY: "05b658df858bedc4b14d6fe5347be02e",
+    AUTH_TOKEN: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNWI2NThkZjg1OGJlZGM0YjE0ZDZmZTUzNDdiZTAyZSIsInN1YiI6IjVlZTljMzMxMjc5MGJmMDAzNDUyODBlMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.h4BJKDPiQjvnX4nda53rrWqeVImc0SsqNqhThgJMEtI"
+}

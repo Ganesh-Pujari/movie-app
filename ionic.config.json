@@ -1,0 +1,7 @@
+{
+  "name": "My Movies",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
