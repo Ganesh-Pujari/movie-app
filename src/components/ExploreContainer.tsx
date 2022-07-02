@@ -3,7 +3,7 @@ import "./ExploreContainer.css";
 import { get } from "../shared/Http";
 import { Endpoints } from "../config/Endpoints";
 import { MovieCard } from "../shared/MoviesCard";
-
+import { IonLoading, IonButton, IonContent } from '@ionic/react';
 interface ContainerProps {}
 
 const ExploreContainer: React.FC<ContainerProps> = (props) => {
@@ -12,6 +12,7 @@ const ExploreContainer: React.FC<ContainerProps> = (props) => {
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     getPopularMovies();
@@ -34,10 +35,17 @@ const ExploreContainer: React.FC<ContainerProps> = (props) => {
     nowPlaying ? setNowPlayingMovies(nowPlaying.results) : [];
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     upcomingMovies ? setUpcomingMovies(upcomingMovies.results) : [];
+    setShowLoading(false)
   };
 
   return (
     <div className="ion-margin">
+       <IonLoading
+        cssClass='my-custom-class'
+        isOpen={showLoading}
+        spinner={'bubbles'}
+        message={'Please wait...'}
+      />
       <p>Popular Movies</p>
 
       <div className="container ion-margin-vertical">

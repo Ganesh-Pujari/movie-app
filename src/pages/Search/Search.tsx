@@ -31,6 +31,7 @@ export const Search: React.FC = () => {
       <Header heading={"Search"} showSearch={false} />
       <IonContent className="content" fullscreen>
         <IonSearchbar
+          placeholder="Type movie name"
           onInput={(e: any) => {
             if (e.target.value.length > 2) {
               getSearchMovies(e.target.value);
@@ -59,7 +60,7 @@ export const Search: React.FC = () => {
                     target.src = noImage;
                   }}
                 ></IonImg>
-                <IonLabel className="title ion-margin">{result.title}</IonLabel>
+                <IonLabel className="title ion-margin ion-padding">{result.title}</IonLabel>
               </IonItem>
             );
           })}

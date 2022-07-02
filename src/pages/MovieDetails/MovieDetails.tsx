@@ -4,6 +4,7 @@ import {
   IonCol,
   IonContent,
   IonImg,
+  IonLoading,
   IonPage,
   IonRow,
   IonText,
@@ -15,17 +16,18 @@ import { Endpoints } from "../../config/Endpoints";
 import { Header } from "../../shared/Header";
 import { get } from "../../shared/Http";
 import "./MovieDetails.css";
+import noImage from "./no-image.png";
 export const MovieDetails: React.FC = () => {
   const { id }: any = useParams();
   const [movie, setMovie] = useState<any>();
   const [videos, setVideos] = useState<[]>();
   const [cast, setCast] = useState<[]>();
   const [crew, setCrew] = useState<[]>();
-
+  const [showLoading, setShowLoading] = useState(true);
   console.log("🚀 ~ file: MovieDetails.tsx ~ line 7 ~ params", id);
   useEffect(() => {
     getMovieDetails();
-  }, []);
+  }, [id]);
   const getMovieDetails = async () => {
     const movie = await get(
       `${Endpoints.movieDetails}/${id}?api_key=${MovieObj.API_KEY}&append_to_response=videos,images&language=en-US`
@@ -42,10 +44,17 @@ export const MovieDetails: React.FC = () => {
     movie ? setVideos(movie.videos.results.reverse()) : [];
     castAndCrew ? setCast(castAndCrew.cast) : null;
     castAndCrew ? setCrew(castAndCrew.crew) : null;
+    setShowLoading(false);
   };
   return (
     <IonPage>
       <Header heading={movie?.title} showSearch={true} />
+      <IonLoading
+        cssClass="my-custom-class"
+        isOpen={showLoading}
+        spinner={"bubbles"}
+        message={"Please wait..."}
+      />
       <IonContent className="content" fullscreen>
         {movie?.backdrop_path && (
           <IonImg
@@ -58,6 +67,10 @@ export const MovieDetails: React.FC = () => {
               {movie?.poster_path && (
                 <IonImg
                   src={Endpoints.thumbImageUrl + movie?.poster_path}
+                  onIonError={({ target }) => {
+                    target.onerror = null;
+                    target.src = noImage;
+                  }}
                 ></IonImg>
               )}
             </IonCol>
@@ -101,12 +114,16 @@ export const MovieDetails: React.FC = () => {
                 </span>
                 <IonImg
                   src={Endpoints.thumbImageUrl + cast.profile_path}
+                   onIonError={({ target }) => {
+                    target.onerror = null;
+                    target.src = noImage;
+                  }}
                 ></IonImg>
               </IonCard>
             ))}
           </IonCol>
-        </IonRow>
-        <IonRow>
+        </IonRow> */}
+        {/* <IonRow>
           <IonCol></IonCol>
         </IonRow> */}
         {videos &&
