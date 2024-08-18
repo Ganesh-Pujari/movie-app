@@ -5,11 +5,12 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonLoading,
   IonPage,
   IonSearchbar,
   IonText,
 } from "@ionic/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Endpoints } from "../../config/Endpoints";
 import { Header } from "../../shared/Header";
@@ -19,26 +20,54 @@ import noImage from "./no-image.png";
 
 export const Search: React.FC = () => {
   const history = useHistory();
+  const [showLoading, setShowLoading] = useState(false);
+
   const [searchResult, setSearchMovie] = useState<[]>([]);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const getSearchMovies = async (searchKeyword: string) => {
-    const searchResult = await get(`${Endpoints.searchMovies}${searchKeyword}`);
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    searchResult ? setSearchMovie(searchResult.results) : [];
+    try {
+      setShowLoading(true);
+      const searchResult = await get(
+        `${Endpoints.searchMovies}${searchKeyword}`
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      searchResult ? setSearchMovie(searchResult.results) : [];
+      setShowLoading(false);
+    } catch (err) {
+      console.log("🚀 ~ file: Search.tsx:39 ~ getSearchMovies ~ err:", err);
+    } finally {
+      setShowLoading(false);
+    }
   };
+
+  const handleSearch = (e: any) => {
+    const value = e.target.value;
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    if (value.length > 2) {
+      debounceTimer.current = setTimeout(() => {
+        getSearchMovies(value);
+      }, 600);
+    } else {
+      setSearchMovie([]);
+    }
+  };
+
   return (
     <IonPage>
       <Header heading={"Search"} showSearch={false} />
+      <IonLoading
+        cssClass="my-custom-class"
+        isOpen={showLoading}
+        spinner={"bubbles"}
+        message={"Please wait..."}
+      />
       <IonContent className="content" fullscreen>
         <IonSearchbar
           placeholder="Type movie name"
-          onInput={(e: any) => {
-            if (e.target.value.length > 2) {
-              getSearchMovies(e.target.value);
-            } else {
-              setSearchMovie([]);
-            }
-          }}
+          onInput={handleSearch}
           onIonClear={() => setSearchMovie([])}
         ></IonSearchbar>
         <IonList lines={"full"}>
@@ -60,7 +89,9 @@ export const Search: React.FC = () => {
                     target.src = noImage;
                   }}
                 ></IonImg>
-                <IonLabel className="title ion-margin ion-padding">{result.title}</IonLabel>
+                <IonLabel className="title ion-margin ion-padding">
+                  {result.title}
+                </IonLabel>
               </IonItem>
             );
           })}

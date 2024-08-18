@@ -20,7 +20,7 @@ const ExploreContainer: React.FC<ContainerProps> = (props) => {
 
   const getPopularMovies = async () => {
     const popularMovies = await get(`${Endpoints.popularMovies}`);
-    const latestMovies = await get(`${Endpoints.latestMovies}`);
+    // const latestMovies = await get(`${Endpoints.latestMovies}`);
     const topRatedMovies = await get(`${Endpoints.topRatedMovies}`);
     const nowPlaying = await get(`${Endpoints.nowPlayingMovies}`);
     const upcomingMovies = await get(`${Endpoints.upcomingMovies}`);
@@ -28,7 +28,7 @@ const ExploreContainer: React.FC<ContainerProps> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     popularMovies ? setPopularMovies(popularMovies.results) : [];
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    latestMovies ? setLatestMovies(latestMovies.results) : [];
+    // latestMovies ? setLatestMovies(latestMovies.results) : [];
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     topRatedMovies ? setTopRatedMovies(topRatedMovies.results) : [];
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions

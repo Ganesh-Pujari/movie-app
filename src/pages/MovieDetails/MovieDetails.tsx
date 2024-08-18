@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { MovieObj } from "../../config/Auth";
 import { Endpoints } from "../../config/Endpoints";
 import { Header } from "../../shared/Header";
 import { get } from "../../shared/Http";
@@ -24,27 +23,30 @@ export const MovieDetails: React.FC = () => {
   const [cast, setCast] = useState<[]>();
   const [crew, setCrew] = useState<[]>();
   const [showLoading, setShowLoading] = useState(true);
-  console.log("🚀 ~ file: MovieDetails.tsx ~ line 7 ~ params", id);
+
   useEffect(() => {
     getMovieDetails();
   }, [id]);
+
   const getMovieDetails = async () => {
-    const movie = await get(
-      `${Endpoints.movieDetails}/${id}?api_key=${MovieObj.API_KEY}&append_to_response=videos,images&language=en-US`
-    );
-    const castAndCrew = await get(
-      `${Endpoints.movieDetails}/${id}/credits?api_key=${MovieObj.API_KEY}&append_to_response=videos,images&language=en-US`
-    );
-    console.log(
-      "🚀 ~ file: MovieDetails.tsx ~ line 21 ~ getMovieDetails ~ movie",
-      movie,
-      castAndCrew
-    );
-    movie ? setMovie(movie) : [];
-    movie ? setVideos(movie.videos.results.reverse()) : [];
-    castAndCrew ? setCast(castAndCrew.cast) : null;
-    castAndCrew ? setCrew(castAndCrew.crew) : null;
-    setShowLoading(false);
+    try {
+      setShowLoading(true);
+      const movieDetailsUrl = `${Endpoints.movieDetails}`.replace("id", id);
+      const movieCreditsUrl = `${Endpoints.movieCredits}`.replace("id", id);
+      const movie = await get(movieDetailsUrl);
+      const castAndCrew = await get(movieCreditsUrl);
+      movie ? setMovie(movie) : [];
+      movie ? setVideos(movie.videos.results.reverse()) : [];
+      castAndCrew ? setCast(castAndCrew.cast) : null;
+      castAndCrew ? setCrew(castAndCrew.crew) : null;
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: MovieDetails.tsx:44 ~ getMovieDetails ~ error:",
+        error
+      );
+    } finally {
+      setShowLoading(false);
+    }
   };
   return (
     <IonPage>
@@ -104,28 +106,24 @@ export const MovieDetails: React.FC = () => {
             </IonCol>
           </IonRow>
         </IonCard>
-        {/* <IonRow>
-          <IonCol>
-            {cast?.map((cast: any, index: any) => (
-              <IonCard key={cast.id}>
-                <span key={cast.id} className="starting-list">
-                  {cast.name}
-                  {index < 5 ? "," : ""}
-                </span>
-                <IonImg
-                  src={Endpoints.thumbImageUrl + cast.profile_path}
-                   onIonError={({ target }) => {
-                    target.onerror = null;
-                    target.src = noImage;
-                  }}
-                ></IonImg>
-              </IonCard>
-            ))}
-          </IonCol>
-        </IonRow> */}
-        {/* <IonRow>
-          <IonCol></IonCol>
-        </IonRow> */}
+        <IonCard className="cast-card">
+          {cast?.map((cast: any, index: any) => (
+            <div className="cast">
+              <p key={cast.id} className="starting-list cast-name">
+                {cast.name}
+              </p>
+              <IonImg
+                src={Endpoints.thumbImageUrl + cast.profile_path}
+                className="cast-image"
+                onIonError={({ target }) => {
+                  target.onerror = null;
+                  target.src = noImage;
+                }}
+              ></IonImg>
+            </div>
+          ))}
+        </IonCard>
+
         {videos &&
           videos.map(
             (video: any, index: number) =>
@@ -135,9 +133,8 @@ export const MovieDetails: React.FC = () => {
                     height={"300px"}
                     width={"100%"}
                     key={video.id}
-                    src={`https://www.youtube.com/embed/${video["key"]}?autoplay=1`}
+                    src={`https://www.youtube.com/embed/${video["key"]}?autoplay=0`}
                     title={video.title}
-                    frameBorder={"none"}
                     allowFullScreen={true}
                   ></iframe>
                 </IonCard>

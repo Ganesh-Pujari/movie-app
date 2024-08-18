@@ -23,3 +23,23 @@
     margin: 5px 0 0 5px;
     font-size: 14px;
 }
+.cast{
+    margin: 5px 0 0 5px;
+}
+
+.cast-name{
+    padding: 3px;
+    height: 35px;
+    overflow: hidden;
+}
+.cast-card{
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    margin: 0 5px;
+}
+
+.cast-image{
+    height: 200px;
+    width: 125px;
+}
